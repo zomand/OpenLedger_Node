@@ -1,6 +1,6 @@
 # OpenLedger Node Installer
 
-Скрипт для автоматической установки OpenLedger Node.
+Автоматический установщик OpenLedger Node для Ubuntu/Debian систем.
 
 ## Установка
 
