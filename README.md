@@ -6,7 +6,7 @@
 
 ```bash
 # Клонируем репозиторий
-git clone https://github.com/your_username/openledger-installer
+git clone https://github.com/zomand/openledger_node
 
 # Переходим в директорию
 cd openledger-installer
