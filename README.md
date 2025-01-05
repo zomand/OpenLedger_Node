@@ -27,5 +27,4 @@ xvfb-run openledger-node --no-sandbox
 
 # Быстрая установка
 
-```bash
 wget -O - https://raw.githubusercontent.com/zomand/OpenLedger_Node/main/install_openledger.sh | sudo bash
