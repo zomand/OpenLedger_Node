@@ -19,8 +19,8 @@ sudo ./install_openledger.sh
 
 # Запуск ноды
 После установки запустите ноду командами:
-bashCopyscreen -S openledger_node
-xvfb-run openledger-node --no-sandbox
+screen -S openledger_node
+openledger-node --no-sandbox
 
 # Для выхода из screen сессии: Ctrl+A, затем D
 # Для возврата в сессию: screen -r openledger_node
