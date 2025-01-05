@@ -25,6 +25,7 @@ xvfb-run openledger-node --no-sandbox
 # Для выхода из screen сессии: Ctrl+A, затем D
 # Для возврата в сессию: screen -r openledger_node
 
-# Установка одной командой
+# Быстрая установка
+
 ```bash
-wget -O - https://raw.githubusercontent.com/zomand/openledger_node/main/install_openledger.sh | sudo bash
+wget -O - https://raw.githubusercontent.com/zomand/OpenLedger_Node/main/install_openledger.sh | sudo bash
