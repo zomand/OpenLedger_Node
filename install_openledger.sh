@@ -1,37 +1,44 @@
 #!/bin/bash
 # Функция логирования
 log() {
-   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
 # Проверка root прав
 if [ "$EUID" -ne 0 ]; then 
-   log "Пожалуйста, запустите скрипт с правами root (sudo)"
-   exit 1
+    log "Пожалуйста, запустите скрипт с правами root (sudo)"
+    exit 1
 fi
 
 # Установка с выводом статуса
 log "Начало установки..."
 
+# Сначала устанавливаем xvfb и базовые пакеты
+log "Установка базовых пакетов..."
+{
+    apt update
+    apt install -y xvfb xfce4 nano
+} || { log "Ошибка при установке базовых пакетов"; exit 1; }
+
 # Настройка X11 и SSH
 log "Настройка X11 и SSH..."
 {
-   # Создание .Xauthority
-   touch ~/.Xauthority
-   
-   # Конфигурация SSH для X11 Forwarding
-   cat >> /etc/ssh/sshd_config << 'EOF'
+    # Создание .Xauthority
+    touch ~/.Xauthority
+    
+    # Конфигурация SSH для X11 Forwarding
+    cat >> /etc/ssh/sshd_config << 'EOF'
 X11Forwarding yes
 X11DisplayOffset 10
 X11UseLocalHost yes
 EOF
-   
-   # Перезапуск SSH
-   systemctl restart sshd
-   
-   # Настройка виртуального дисплея
-   export DISPLAY=:99
-   Xvfb :99 -screen 0 1920x1080x24 &
+    
+    # Перезапуск SSH
+    systemctl restart sshd
+    
+    # Настройка виртуального дисплея
+    export DISPLAY=:99
+    Xvfb :99 -screen 0 1920x1080x24 &
 } || { log "Ошибка при настройке X11 и SSH"; exit 1; }
 
 log "Установка Docker..."
