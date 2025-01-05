@@ -1,13 +1,13 @@
 #!/bin/bash
 # Функция логирования
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
 # Проверка root прав
 if [ "$EUID" -ne 0 ]; then 
-    log "Пожалуйста, запустите скрипт с правами root (sudo)"
-    exit 1
+   log "Пожалуйста, запустите скрипт с правами root (sudo)"
+   exit 1
 fi
 
 # Установка с выводом статуса
@@ -16,29 +16,29 @@ log "Начало установки..."
 # Сначала устанавливаем xvfb и базовые пакеты
 log "Установка базовых пакетов..."
 {
-    apt update
-    apt install -y xvfb xfce4 nano
+   apt update
+   apt install -y xvfb xfce4 nano
 } || { log "Ошибка при установке базовых пакетов"; exit 1; }
 
 # Настройка X11 и SSH
 log "Настройка X11 и SSH..."
 {
-    # Создание .Xauthority
-    touch ~/.Xauthority
-    
-    # Конфигурация SSH для X11 Forwarding
-    cat >> /etc/ssh/sshd_config << 'EOF'
+   # Создание .Xauthority
+   touch ~/.Xauthority
+   
+   # Конфигурация SSH для X11 Forwarding
+   cat >> /etc/ssh/sshd_config << 'EOF'
 X11Forwarding yes
 X11DisplayOffset 10
 X11UseLocalHost yes
 EOF
-    
-    # Перезапуск SSH
-    systemctl restart sshd
-    
-    # Настройка виртуального дисплея
-    export DISPLAY=:99
-    Xvfb :99 -screen 0 1920x1080x24 &
+   
+   # Перезапуск SSH
+   systemctl restart sshd
+   
+   # Настройка виртуального дисплея
+   export DISPLAY=:99
+   Xvfb :99 -screen 0 1920x1080x24 &
 } || { log "Ошибка при настройке X11 и SSH"; exit 1; }
 
 log "Установка Docker..."
@@ -52,12 +52,27 @@ log "Установка Docker..."
 log "Обновление и установка зависимостей..."
 {
    apt update
-   apt install -y docker-ce docker-ce-cli containerd.io \
-   libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils \
-   libatspi2.0-0 libsecret-1-0 unzip tmux desktop-file-utils \
-   libgbm1 libasound2 xvfb mesa-utils libgl1-mesa-glx \
-   libgl1-mesa-dri xserver-xorg-video-all libegl1-mesa \
-   libegl1-mesa-dev libgles2-mesa-dev xfce4
+   apt install -y \
+   docker-ce \
+   docker-ce-cli \
+   containerd.io \
+   libgtk-3-0t64 \
+   libnotify4 \
+   libnss3 \
+   libxss1 \
+   libxtst6 \
+   xdg-utils \
+   libatspi2.0-0t64 \
+   libsecret-1-0 \
+   unzip \
+   tmux \
+   desktop-file-utils \
+   libgbm1 \
+   libasound2t64 \
+   xvfb \
+   mesa-utils \
+   xserver-xorg-video-all \
+   xfce4
 } || { log "Ошибка при установке зависимостей"; exit 1; }
 
 log "Загрузка OpenLedger..."
@@ -91,7 +106,7 @@ if tmux has-session -t openledger 2>/dev/null; then
    tmux attach -t openledger
 else
    echo "Создание новой сессии openledger..."
-   tmux new-session -d -s openledger 'openledger-node --no-sandbox'
+   tmux new-session -d -s openledger 'xvfb-run openledger-node --no-sandbox'
    echo "Сессия создана. Подключение..."
    tmux attach -t openledger
 fi
