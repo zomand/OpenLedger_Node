@@ -1,13 +1,6 @@
 # OpenLedger Node Installer
 
-Автоматический установщик OpenLedger Node для Ubuntu/Debian систем с поддержкой GUI через X11.
-
-## Требования
-
-- Ubuntu/Debian-based система
-- Доступ к root правам
-- Минимум 2GB RAM
-- Стабильное интернет-соединение
+Автоматический установщик OpenLedger Node для Ubuntu/Debian систем.
 
 ## Быстрая установка
 
@@ -45,12 +38,11 @@ sudo ./install_openledger.sh
 ```bash
 start-openledger
 ```
-Этот способ автоматически настраивает виртуальный дисплей и запускает ноду в tmux сессии.
 
 ### 2. Ручной запуск
 ```bash
 tmux new -s openledger
-xvfb-run openledger-node --no-sandbox
+openledger-node --no-sandbox
 ```
 
 ## Управление tmux сессией
@@ -60,111 +52,47 @@ xvfb-run openledger-node --no-sandbox
 - Список всех сессий: `tmux ls`
 - Убить сессию: `tmux kill-session -t openledger`
 
-## Особенности установки
-
-- Автоматическая настройка X11 forwarding
-- Установка и настройка виртуального дисплея (Xvfb)
-- Настройка SSH для поддержки GUI
-- Создание удобного скрипта запуска
-
 ## Устранение неполадок
 
 ### Ошибка X server или $DISPLAY
 
 Если возникает ошибка "Missing X server or $DISPLAY", выполните следующие шаги:
 
-1. Проверьте статус виртуального дисплея:
+1. Установите дополнительные пакеты:
 ```bash
-ps aux | grep Xvfb
+sudo apt update
+sudo apt install xfce4 xvfb
 ```
 
-2. Если виртуальный дисплей не запущен:
+2. Настройте виртуальный дисплей:
 ```bash
 Xvfb :99 -screen 0 1920x1080x24 &
 export DISPLAY=:99
 ```
 
-3. Перезапустите ноду:
+3. Создайте файл авторизации X:
 ```bash
-start-openledger
+touch ~/.Xauthority
 ```
 
-### Проблемы с GUI
-
-Если возникают проблемы с графическим интерфейсом:
-
-1. Проверьте конфигурацию SSH:
+4. Настройте SSH конфигурацию:
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-Убедитесь, что присутствуют строки:
+Добавьте или раскомментируйте следующие строки:
 ```
 X11Forwarding yes
 X11DisplayOffset 10
 X11UseLocalHost yes
 ```
 
-2. Перезапустите SSH сервис:
+5. Сохраните файл (Ctrl+X, затем Y, затем Enter) и перезапустите SSH:
 ```bash
 sudo systemctl restart sshd
 ```
 
-### Очистка и перезапуск
-
-Если нужно полностью перезапустить ноду:
-
-1. Убить все сессии tmux:
+6. Переподключитесь к tmux сессии:
 ```bash
-tmux kill-server
+tmux attach -t openledger
 ```
-
-2. Остановить виртуальный дисплей:
-```bash
-pkill Xvfb
-```
-
-3. Создать файл авторизации X:
-```bash
-touch ~/.Xauthority
-```
-
-4. Запустить заново:
-```bash
-start-openledger
-```
-
-## Безопасность
-
-- Все соединения через SSH туннель шифруются
-- Виртуальный дисплей изолирован от основной системы
-- Процессы запускаются в изолированных tmux сессиях
-
-## Обновление
-
-Если вышла новая версия скрипта:
-
-1. Остановить текущую ноду:
-```bash
-tmux kill-session -t openledger
-pkill Xvfb
-```
-
-2. Обновить репозиторий:
-```bash
-cd openledger_node
-git pull
-```
-
-3. Перезапустить установку:
-```bash
-sudo ./install_openledger.sh
-```
-
-## Вклад в развитие
-
-Если у вас есть предложения по улучшению установщика или вы нашли ошибку, пожалуйста, создайте issue или pull request в этом репозитории.
-
-## Лицензия
-
-MIT
