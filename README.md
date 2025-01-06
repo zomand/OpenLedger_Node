@@ -2,6 +2,11 @@
 
 Автоматический установщик OpenLedger Node для Ubuntu/Debian систем.
 
+## Требования
+- Ubuntu/Debian-based система
+- Минимум 2GB RAM
+- Root доступ
+
 ## Быстрая установка
 
 ```bash
@@ -10,89 +15,96 @@ wget -O - https://raw.githubusercontent.com/zomand/OpenLedger_Node/main/install_
 
 ## Ручная установка
 
-1. Клонируем репозиторий:
+1. Установка зависимостей и обновление системы:
 ```bash
-git clone https://github.com/zomand/openledger_node
+sudo apt update && sudo apt upgrade -y
+sudo apt install ubuntu-desktop xrdp docker.io unzip -y
 ```
 
-2. Переходим в директорию:
+2. Настройка XRDP:
 ```bash
-cd openledger_node
+sudo adduser xrdp ssl-cert
+sudo systemctl start gdm
+sudo systemctl restart xrdp
 ```
 
-3. Даём права на выполнение скрипту:
+3. Настройка Docker:
 ```bash
-chmod +x install_openledger.sh
+sudo systemctl start docker
+sudo systemctl enable docker
 ```
 
-4. Запускаем установку:
+4. Установка OpenLedger:
 ```bash
-sudo ./install_openledger.sh
+wget https://cdn.openledger.xyz/openledger-node-1.0.0-linux.zip
+unzip openledger-node-1.0.0-linux.zip
+sudo dpkg -i openledger-node-1.0.0.deb
+```
+
+5. Установка дополнительных пакетов:
+```bash
+sudo apt update
+sudo apt install -y desktop-file-utils libgbm1 libasound2
+sudo dpkg --configure -a
 ```
 
 ## Запуск ноды
 
-После установки у вас есть два способа запуска ноды:
-
-### 1. Автоматический запуск (рекомендуется)
+После установки запустите ноду:
 ```bash
-start-openledger
-```
-
-### 2. Ручной запуск
-```bash
-tmux new -s openledger
 openledger-node --no-sandbox
 ```
 
-## Управление tmux сессией
+## Подключение к ноде
 
-- Отключиться от сессии (нода продолжит работать): `Ctrl + B`, затем `D`
-- Подключиться к сессии: `tmux attach -t openledger`
-- Список всех сессий: `tmux ls`
-- Убить сессию: `tmux kill-session -t openledger`
+1. Windows:
+   - Подключитесь через Remote Desktop Connection (RDP)
+   - Хост: IP-адрес вашего сервера
+   - Логин/пароль: ваши учетные данные Ubuntu
+
+2. Mac:
+   - Установите клиент Microsoft Remote Desktop
+   - Добавьте новое подключение с IP-адресом сервера
+   - Используйте учетные данные Ubuntu
+
+## Обновления
+
+Для обновления ноды:
+```bash
+wget https://cdn.openledger.xyz/openledger-node-latest.zip
+unzip openledger-node-latest.zip
+sudo dpkg -i openledger-node*.deb
+```
 
 ## Устранение неполадок
 
-### Ошибка X server или $DISPLAY
-
-Если возникает ошибка "Missing X server or $DISPLAY", выполните следующие шаги:
-
-1. Установите дополнительные пакеты:
+### Ошибка доступа к Docker
 ```bash
-sudo apt update
-sudo apt install xfce4 xvfb
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
-2. Настройте виртуальный дисплей:
+### Проблемы с XRDP
 ```bash
-Xvfb :99 -screen 0 1920x1080x24 &
-export DISPLAY=:99
+sudo systemctl restart xrdp
 ```
 
-3. Создайте файл авторизации X:
+### Ошибки установки пакетов
 ```bash
-touch ~/.Xauthority
+sudo apt --fix-broken install
+sudo dpkg --configure -a
 ```
 
-4. Настройте SSH конфигурацию:
-```bash
-sudo nano /etc/ssh/sshd_config
-```
+## Безопасность
 
-Добавьте или раскомментируйте следующие строки:
-```
-X11Forwarding yes
-X11DisplayOffset 10
-X11UseLocalHost yes
-```
+- Используйте сложные пароли
+- Настройте файрвол
+- Регулярно обновляйте систему
 
-5. Сохраните файл (Ctrl+X, затем Y, затем Enter) и перезапустите SSH:
-```bash
-sudo systemctl restart sshd
-```
+## Поддержка
 
-6. Переподключитесь к tmux сессии:
-```bash
-tmux attach -t openledger
-```
+При возникновении проблем создайте issue в репозитории.
+
+## Лицензия
+
+MIT
