@@ -18,7 +18,7 @@ wget -O - https://raw.githubusercontent.com/zomand/OpenLedger_Node/main/install_
 1. Установка зависимостей и обновление системы:
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install ubuntu-desktop xrdp docker.io unzip -y
+sudo apt install ubuntu-desktop xrdp docker.io unzip screen -y
 ```
 
 2. Настройка XRDP:
@@ -50,9 +50,21 @@ sudo dpkg --configure -a
 
 ## Запуск ноды
 
-После установки запустите ноду:
+После установки запустите ноду с помощью screen:
 ```bash
+screen -S openledger
 openledger-node --no-sandbox
+```
+
+Управление screen сессией:
+- Отключиться от сессии (нода продолжит работать): `Ctrl + A`, затем `D`
+- Подключиться к сессии: `screen -r openledger`
+- Список сессий: `screen -ls`
+- Убить сессию: `screen -X -S openledger quit`
+
+Или используйте подготовленный скрипт:
+```bash
+start-openledger
 ```
 
 ## Подключение к ноде
@@ -93,6 +105,15 @@ sudo systemctl restart xrdp
 ```bash
 sudo apt --fix-broken install
 sudo dpkg --configure -a
+```
+
+### Проблемы со screen сессией
+```bash
+# Восстановить потерянную сессию
+screen -d -r openledger
+
+# Если screen не установлен
+sudo apt install screen
 ```
 
 ## Безопасность
