@@ -1,8 +1,7 @@
 #!/bin/bash
-
 # Обновление системы и установка необходимых пакетов
 sudo apt update && sudo apt upgrade -y
-sudo apt install ubuntu-desktop xrdp docker.io unzip -y
+sudo apt install ubuntu-desktop xrdp docker.io unzip screen -y
 
 # Настройка XRDP
 sudo adduser xrdp ssl-cert
@@ -26,7 +25,11 @@ sudo dpkg --configure -a
 # Создание скрипта запуска
 cat > /usr/local/bin/start-openledger << 'EOF'
 #!/bin/bash
-openledger-node --no-sandbox
+if screen -ls | grep -q "openledger"; then
+    screen -r openledger
+else
+    screen -S openledger openledger-node --no-sandbox
+fi
 EOF
 
 chmod +x /usr/local/bin/start-openledger
