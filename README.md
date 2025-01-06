@@ -56,6 +56,34 @@ screen -S openledger
 openledger-node --no-sandbox
 ```
 
+## Смена machine-id
+
+Смена необходима если вы запустили 2 ноды, но в dashboard отображается только 1
+
+## Текущий machine-id можно посмотреть командой:
+```bash
+cat /etc/machine-id
+```
+
+# Удалить старый machine-id
+```bash
+sudo rm /etc/machine-id
+sudo rm /var/lib/dbus/machine-id
+```
+# Создать новый machine-id
+```bash
+sudo systemd-machine-id-setup
+```
+# Перезагрузить 
+```bash
+sudo reboot
+```
+# После перезагрузки запустите ноду с помощью screen:
+```bash
+screen -S openledger
+openledger-node --no-sandbox
+```
+
 Управление screen сессией:
 - Отключиться от сессии (нода продолжит работать): `Ctrl + A`, затем `D`
 - Подключиться к сессии: `screen -r openledger`
