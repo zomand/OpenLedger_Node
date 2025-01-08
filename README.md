@@ -18,7 +18,7 @@ wget -O - https://raw.githubusercontent.com/zomand/OpenLedger_Node/main/install_
 1. Установка зависимостей и обновление системы:
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install ubuntu-desktop xrdp docker.io unzip screen -y
+sudo apt install xrdp docker.io unzip screen -y
 ```
 
 2. Настройка XRDP:
