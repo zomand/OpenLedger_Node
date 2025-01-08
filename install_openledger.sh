@@ -1,7 +1,7 @@
 #!/bin/bash
 # Обновление системы и установка необходимых пакетов
 sudo apt update && sudo apt upgrade -y
-sudo apt install xrdp docker.io unzip screen -y
+sudo apt install ubuntu-desktop xrdp docker.io unzip screen -y
 
 # Настройка XRDP
 sudo adduser xrdp ssl-cert
